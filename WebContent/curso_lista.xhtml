@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		<title>Listagem de Cursos</title>
+	</h:head>
+	
+	<h:body>
+		<p:panel header="Lista de Cursos" style="width:80%">
+			<p:button value="Novo Curso" outcome="curso_formulario" />
+			<br /> <br />
+			<h:form>
+				
+				<p:growl id="mensagem" />
+				
+				<p:dataTable value="#{cursoBean.cursos}" var="curso" paginator="true" rows="5"
+							 paginatorPosition="bottom" rowsPerPageTemplate="5, 10, 15"
+							 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} 
+							 {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					
+					<p:column headerText="Nome" style="width:300px" sortBy="#{curso.nome}"
+							  filterBy="#{curso.nome}" filterMatchMode="contains">
+						<h:outputText value="#{curso.nome}"/>
+					</p:column>
+					
+					<p:column headerText="Duração" style="width:60px; text-align:center;">
+						<h:outputText value="#{curso.duracao}"/>
+					</p:column>
+					
+					<p:column headerText="Tipo" style="width:200px">
+						<h:outputText value="#{curso.tipo.label}"/>					
+					</p:column>
+	
+					<p:column headerText="Data Criação" style="width:120px; text-align:center;">
+						<h:outputText value="#{curso.dataCriacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Operações" style="width:120px; text-align:center;">
+						<p:commandLink value="Editar" action="#{cursoBean.editar(curso)}" 
+									   style="color:blue"/>
+						&nbsp;
+						<p:commandLink value="Excluir" 
+									   actionListener="#{cursoBean.prepararExclusao(curso)}"
+									   oncomplete="PF('confirmarExclusao').show();" 
+									   style="color:red" update="@form">
+						
+						</p:commandLink>				   			   
+					</p:column>
+			
+				</p:dataTable>
+				
+				<p:confirmDialog message="Confirma exclusão do curso de #{cursoBean.curso.nome}?" 
+								 widgetVar="confirmarExclusao">
+					<p:commandButton value="Sim" action="#{cursoBean.excluir()}" 
+									 oncomplete="PF('confirmarExclusao').hide();" update="@form"/>
+					<p:commandButton value="Não" oncomplete="PF('confirmarExclusao').hide();" />
+				</p:confirmDialog>
+			</h:form>
+		</p:panel>
+	</h:body>
+</html>
